@@ -402,6 +402,11 @@ shape = SubResource("RectangleShape2D_wl0sl")
 
 [node name="LocationMarkers" type="Node2D" parent="." unique_id=925965353]
 
+[node name="PreviewCamera" type="Camera2D" parent="." unique_id=1442482601]
+position = Vector2(1296, 1104)
+zoom = Vector2(0.75, 0.75)
+enabled = true
+
 [node name="GovernmentHallMarker" type="Marker2D" parent="LocationMarkers" unique_id=513892407]
 position = Vector2(528, 592)
 
