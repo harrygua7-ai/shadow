@@ -82,7 +82,11 @@ scripts/
 
 ## Agent 分工
 
-### Map Blueprint Agent
+### Phase 0 Historical / Optional Roles
+
+Phase 0 已完成后，以下角色不应作为 Phase 1-2 的默认必需 Agent。它们只在需要重新评估概念图或地图方向时启用。
+
+#### Map Blueprint Agent
 
 职责：
 
@@ -90,6 +94,11 @@ scripts/
 - 分析地点关系
 - 评估道路和广场是否合理
 - 找出可能阻碍玩家移动的布局问题
+
+当前状态：
+
+- `MAP_LAYOUT.md` 已经承担主要布局决策。
+- Phase 1-2 默认不再单独 spawn，除非用户要求重新评估地图布局。
 
 权限：
 
@@ -106,32 +115,7 @@ scripts/
 5. 修改建议
 ```
 
-### Tile Planning Agent
-
-职责：
-
-- 设计 tile 类型
-- 规划 tile 分类
-- 规划碰撞类型
-- 分析哪些元素可走/不可走
-- 为 Godot TileSet 提供结构建议
-
-权限：
-
-- 只输出方案
-- 不修改 Godot 文件，除非进入 Phase 1-2 实现阶段时被明确授权
-
-输出：
-
-```text
-1. Tile 类型清单
-2. 碰撞分类
-3. 地图层级建议
-4. Godot TileMap 建议
-5. 风险点
-```
-
-### Visual Reference Agent
+#### Visual Reference Agent
 
 职责：
 
@@ -139,6 +123,11 @@ scripts/
 - 分析概念图是否符合地图标准
 - 标注地点区域
 - 判断图像是否适合转成 TileMap
+
+当前状态：
+
+- 概念图和标注图已经确认。
+- Phase 1-2 默认不再启用，除非需要重新生成或重新标注参考图。
 
 权限：
 
@@ -155,7 +144,36 @@ scripts/
 4. 修改建议
 ```
 
-### Godot Map Implementation Agent
+### Phase 1-2 Core Roles
+
+#### Tile Planning Agent
+
+职责：
+
+- 设计 tile 类型
+- 规划 tile 分类
+- 规划碰撞类型
+- 分析哪些元素可走/不可走
+- 为 Godot TileSet 提供结构建议
+- 将概念图和 `MAP_LAYOUT.md` 转换为可实现的 TileMap 规划
+- 指定地图层级、地面类型、建筑类型、装饰类型和碰撞类型
+
+权限：
+
+- 只输出方案
+- 不修改 Godot 文件，除非进入 Phase 1-2 实现阶段时被明确授权
+
+输出：
+
+```text
+1. Tile 类型清单
+2. 碰撞分类
+3. 地图层级建议
+4. Godot TileMap 建议
+5. 风险点
+```
+
+#### Godot Map Implementation Agent
 
 职责：
 
@@ -181,6 +199,63 @@ scripts/
 5. 下一阶段接口
 ```
 
+#### QA / Map Review Agent
+
+职责：
+
+- 检查外部地图是否符合 `MAP_STANDARD.md`
+- 检查地点布局是否符合 `MAP_LAYOUT.md`
+- 检查建筑是否过大、道路是否过窄、树和装饰是否过密
+- 检查碰撞规则是否符合现实逻辑
+- 检查 Phase 3 移动引擎是否有明确接入点
+
+权限：
+
+- 只检查，不直接修改 Godot 文件
+- 输出问题清单和建议
+
+输出：
+
+```text
+1. 检查范围
+2. 通过项
+3. 问题清单
+4. 风险等级
+5. 建议修正
+6. 是否建议进入下一阶段
+```
+
+## Phase 1-2 推荐协作顺序
+
+Phase 1-2 不建议把所有 Agent 同时开工。
+
+推荐顺序：
+
+```text
+Tile Planning Agent
+-> 主 Agent 审阅并确认 tile/collision 方案
+-> Godot Map Implementation Agent
+-> QA / Map Review Agent
+-> 主 Agent 修正并提交
+-> 主 Agent 编写 handoff
+```
+
+可以并行的部分：
+
+```text
+Tile Planning Agent 输出 tile 方案
+QA / Map Review Agent 提前准备 checklist
+主 Agent 准备正式目录结构
+```
+
+不可以并行的部分：
+
+```text
+多个 Agent 同时修改 town_exterior.tscn
+多个 Agent 同时修改 town_exterior_tileset.tres
+多个 Agent 同时重写 MAP_STANDARD 或 MAP_LAYOUT
+```
+
 ## 并行与串行规则
 
 ### 串行事项
@@ -200,12 +275,11 @@ scripts/
 
 以下事项可以并行：
 
-- 概念图分析
 - tile 类型规划
 - 碰撞分类规划
 - 布局风险审查
-- 参考图标注
 - Godot 实现前的技术方案
+- QA checklist 准备
 
 ### 不允许并行修改
 
