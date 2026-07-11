@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shadow 角色移动验证</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <p class="eyebrow">PHASE 3 / MOVEMENT PROOF</p>
+        <h1>角色移动验证</h1>
+      </div>
+      <div class="status" aria-live="polite">
+        <span id="direction">朝向：下</span>
+        <span id="motion">状态：待机</span>
+        <span id="fps">动画：10 FPS</span>
+      </div>
+    </header>
+
+    <section class="stage" aria-label="角色移动测试画布">
+      <canvas id="game" width="960" height="600" tabindex="0"></canvas>
+      <div class="focus-hint" id="focusHint">点击画面开始</div>
+    </section>
+
+    <footer>
+      <div class="keys" aria-label="方向键说明">
+        <span></span><kbd>W</kbd><span></span>
+        <kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
+      </div>
+      <p>使用 WASD 或方向键移动</p>
+    </footer>
+  </main>
+  <script src="movement-demo.js?v=4"></script>
+</body>
+</html>
